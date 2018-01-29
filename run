@@ -1,0 +1,7 @@
+#!/bin/bash
+rm -f a.exe
+rm -f a.exe.stackdump
+g++ main.cpp -o a.exe
+./a.exe "$1" "$2" "$3" 
+rm -f a.exe
+rm -f a.exe.stackdump
