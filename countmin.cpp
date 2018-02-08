@@ -453,9 +453,9 @@ int CM_PointEstN(CM_type * cm, unsigned int query, unsigned int n)
 	int j, histans;
 
 	if (!cm) return 0;
-	histans = cm->histograms[0][hash31(cm->hasha[0], cm->hashb[0], query) % cm->width].query_time(n);
+	histans = cm->histograms[0][hash31(cm->hasha[0], cm->hashb[0], query) % cm->width].slow_query(n);
 	for (j = 1; j<cm->depth; j++)
-		histans = min(histans, cm->histograms[j][hash31(cm->hasha[j], cm->hashb[j], query) % cm->width].query_time(n));
+		histans = min(histans, cm->histograms[j][hash31(cm->hasha[j], cm->hashb[j], query) % cm->width].slow_query(n));
 	return (histans);
 }
 
