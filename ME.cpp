@@ -97,8 +97,9 @@ ME_Alg::ME_Alg(unsigned int W, double e) {
 	this->N = W;
 	time = 1;
 	total = 0;
-	k = ceil(1/e);
-	k2 = ceil(k/2.0) + 2;
+	k = ceil(1.0/double(e));
+	k2 = ceil(double(k)/2.0) + 2;
+	printf("k: %d k2:%d\n",k, k2 );
 	B = log2(N);/***/
 	buff = new unsigned int[B];
 	for (int i = 0; i < B; i++)
@@ -120,8 +121,8 @@ void ME_Alg::init(unsigned int W, double e) {
 	this->N = W;
 	time = 1;
 	total = 0;
-	k = ceil(1/e);
-	k2 = ceil(k/2.0) + 2;
+	k = ceil(1.0/double(e));
+	k2 = ceil(double(k)/2.0) + 2;
 	B = log2(N);/***/
 	buff = new unsigned int[B];
 	for (int i = 0; i < B; i++)
@@ -257,12 +258,15 @@ void ME_Alg::insert_time(int t) {
 		info.getBuckets()->push_front(Bucket(_size, time));
 		info.incrementSize();
 		histogram->push_back(info);
+
 	} else {
 		it->getBuckets()->push_front(Bucket(_size, time));
 		it->incrementSize();
 	}
 
+	//printHistogram();
 	it = histogram->begin();
+
 
 	while (it->getSize() >= k2 && it != histogram->end()){
 		//merge
@@ -291,6 +295,22 @@ void ME_Alg::insert_time(int t) {
 		}
 	}
 
+	//printHistogram();
+
+}
+
+void ME_Alg::printHistogram()
+{
+	list<Info>::iterator it = histogram->begin();
+	while (it != histogram->end()) {
+		printf("info size: %d, \n",it->getSize());
+		list<Bucket>::iterator it2 = (*it).getBuckets()->begin();
+		while (it2 != (*it).getBuckets()->end()){
+			printf("bucket timestamp: %d, \n",it2->getTimestamp());
+			++it2;
+		}
+		++it;
+	}
 }
 
 unsigned int ME_Alg::query() {
@@ -306,19 +326,31 @@ unsigned int ME_Alg::query() {
 
 unsigned int ME_Alg::slow_query(int w) {
 	int buffSum = 0;
+	int tmp = 0;
 	list<Info>::iterator it = histogram->begin();
+	//printHistogram();
 	while (it != histogram->end()){
 		list<Bucket>::iterator it2 = (*it).getBuckets()->begin();
+//		printf("it2 backuts iterator timestamp: %d, time: %d, queried_time: %d\n", it2->getTimestamp(), time, w);
 		while (it2->getTimestamp() >= time - w){
 			buffSum += it2->getSize();
 			++it2;
+			++tmp;
 		}
-		if (it2 == (*it).getBuckets()->end())//TODO
-			break;
+		//printf("number of relevant buckets is: %d, number of buckets:%d\n", tmp, it->getSize());
+		//if (it2 == (*it).getBuckets()->end())//TODO
+			//break;
+		tmp = 0;
 		++it;
 	}
+
+/*
 	if (it == histogram->end())//TODO
-		buffSum += it->getBuckets()->back().getSize() >> 1;
+	{
+			printf("it is histogram end()\n" );
+			buffSum += it->getBuckets()->back().getSize() >> 1;
+	}
+*/
 	return buffSum;
 }
 

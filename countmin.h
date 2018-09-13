@@ -29,7 +29,7 @@ typedef struct CMF_type{ // shadow of above stucture with floats
   unsigned int *hasha, *hashb;
 } CMF_type;
 
-extern CM_type * CM_Init(int, int, int, int , int);
+extern CM_type * CM_Init(int, int, int, int , double);
 extern CM_type * CM_Copy(CM_type *);
 extern void CM_Destroy(CM_type *);
 extern int CM_Size(CM_type *);

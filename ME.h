@@ -53,6 +53,7 @@ public:
 	unsigned int query();
 	unsigned int query_time(int w);
 	unsigned int slow_query(int w);
+	void printHistogram();
 	int* l_CanonicalRepresentation(int S);
 	int usedSpace();
 	//~ME_Alg();

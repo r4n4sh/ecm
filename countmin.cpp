@@ -249,13 +249,13 @@ int main(int argc, char * argv[]) {
 		}
 	}
 
-
 	if (n / counters >= threshold) {
 		printf("Unacceptable parameters: eps*n >= theshold\n");
 		return 0;
 	}
 
-	interval_size = ceil(window_size / 100);
+	int interval_range = min(window_size, n);
+	interval_size = ceil(double(interval_range) / double(100));
 	epsilon = (double)1 / (double)counters;
 	data = (unsigned long *)malloc(sizeof(unsigned long) * n);
 	weights = (unsigned *)malloc(sizeof(unsigned) * n);
@@ -279,17 +279,16 @@ int main(int argc, char * argv[]) {
 		fscanf(fp, "%d", weights + i);
 #ifdef TEST_QUERY
 		int interval_idx = i / 1000;
-		intervals[interval_idx] = 1 + (int)rand() % (int)(0.99 * window_size);
+		intervals[interval_idx] = 1 + (int)rand() % (int)(0.99 * interval_range);
 #endif
 	}
-
 
 #ifdef TEST_UPDATE
 	begint = clock();
 	ftime(&begintb);
 
 	for (i = 0; i < n; i++) {
-		CM_Update(cm, data[i], 1);
+		CM_Update(cm, data[i], i);
 	}
 
 	endt = clock();
@@ -305,7 +304,7 @@ int main(int argc, char * argv[]) {
 	/* Test Query times */
 
 	for (i = 0; i < n; i++) {
-		CM_Update(cm, data[i], 1);
+		CM_Update(cm, data[i], i);
 	}
 
 	begint = clock();
@@ -327,7 +326,7 @@ int main(int argc, char * argv[]) {
 	return 0;
 }
 
-CM_type * CM_Init(int width, int depth, int seed, int w, int epsilon)
+CM_type * CM_Init(int width, int depth, int seed, int w, double epsilon)
 {     // Initialize the sketch based on user-supplied size
   CM_type * cm;
   int j;
@@ -451,7 +450,6 @@ int CM_PointEst(CM_type * cm, unsigned int query)
 int CM_PointEstN(CM_type * cm, unsigned int query, unsigned int n)
 {
 	int j, histans;
-
 	if (!cm) return 0;
 	histans = cm->histograms[0][hash31(cm->hasha[0], cm->hashb[0], query) % cm->width].slow_query(n);
 	for (j = 1; j<cm->depth; j++)
