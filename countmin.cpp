@@ -27,6 +27,11 @@ to Creative Commons, 559 Nathan Abbott Way, Stanford, California
 #endif
 #endif
 
+//#define TEST_ERROR_MEMORY
+//#define TEST_UPDATE 1
+//#define TEST_QUERY 1
+#define TEST_QUERY_INTERVALS
+
 #define min(x,y)	((x) < (y) ? (x) : (y))
 #define max(x,y)	((x) > (y) ? (x) : (y))
 
@@ -108,8 +113,6 @@ int main() {
 	return 0;
 }*/
 
-#define TEST_UPDATE 1
-//#define TEST_QUERY 1
 
 int main(int argc, char * argv[]) {
 	int counters = 100;
@@ -135,6 +138,7 @@ int main(int argc, char * argv[]) {
 	double dPhi = 0.001;
 	uint32_t u32Depth = 4;
 	uint32_t u32Width = 2.0 / dPhi;
+	int percentage = 1;
 
 	for (int i = 1; i < argc; ++i)
 	{
@@ -173,10 +177,10 @@ int main(int argc, char * argv[]) {
 			i++;
 			if (i >= argc)
 			{
-				std::cout << "Missing threshold." << std::endl;
+				std::cout << "Missing interval size percentage (of window size)" << std::endl;
 				return -1;
 			}
-			threshold = atoi(argv[i]);
+			percentage = atoi(argv[i]);
 		}
 		else if (strcmp(argv[i], "-f") == 0)
 		{
@@ -249,18 +253,20 @@ int main(int argc, char * argv[]) {
 		}
 	}
 
-	if (n / counters >= threshold) {
+	/*if (n / counters >= threshold) {
 		printf("Unacceptable parameters: eps*n >= theshold\n");
 		return 0;
-	}
+	}*/
 
 	int interval_range = min(window_size, n);
 	interval_size = ceil(double(interval_range) / double(100));
 	epsilon = (double)1 / (double)counters;
 	data = (unsigned long *)malloc(sizeof(unsigned long) * n);
 	weights = (unsigned *)malloc(sizeof(unsigned) * n);
-
-#ifdef TEST_QUERY
+#ifdef TEST_ERROR_MEMORY
+	unsigned long* window = new unsigned long[window_size];
+#endif
+#if defined(TEST_QUERY) || defined(TEST_ERROR_MEMORY) || defined(TEST_QUERY_INTERVALS)
 	int interval_arr_size = ceil(n / 1000);
 
 	intervals = (unsigned *)malloc(sizeof(unsigned) * interval_arr_size);
@@ -277,10 +283,15 @@ int main(int argc, char * argv[]) {
 		data[i] = (unsigned long)256 * ((unsigned long)256 * ((unsigned long)256 * w + x) + y) + z;
 		fscanf(fp, "%d%d%d%d", &w, &x, &y, &z);
 		fscanf(fp, "%d", weights + i);
-#ifdef TEST_QUERY
+#if defined TEST_QUERY || defined (TEST_QUERY_INTERVALS)
 		int interval_idx = i / 1000;
 		intervals[interval_idx] = 1 + (int)rand() % (int)(0.99 * interval_range);
 #endif
+
+#if defined(TEST_ERROR_MEMORY) 
+			window[i%window_size] = data[i];
+#endif
+
 	}
 
 #ifdef TEST_UPDATE
@@ -322,6 +333,69 @@ int main(int argc, char * argv[]) {
 	printf("./cm %d pairs took %lfs [%d counters %d window_size]\n", n, time, counters, window_size);
 
 #endif
+
+
+#ifdef TEST_QUERY_INTERVALS
+	for (i = 0; i < n; i++) {
+		CM_Update(cm, data[i], i);
+	}
+
+	begint = clock();
+	ftime(&begintb);
+	for (i = 0; i < n; i++) {
+		CM_IntervalQuery(cm, data[i], intervals[i / 1000], intervals[i / 1000] + interval_size);
+	}
+
+	endt = clock();
+	ftime(&endtb);
+
+	time = ((double)(endt - begint)) / CLK_PER_SEC;
+	//memory = maxmemusage();
+
+	printf("./cm %d pairs took %lfs [%d counters %d window_size %d interval_size]\n", n, time, counters, window_size, percentage);
+#endif
+
+#ifdef TEST_ERROR_MEMORY
+	/* Test Query times */
+	double estimated, curr_error = 0;
+	double exact = 0;
+	double emp_error = 0;
+
+	for (i = 0; i < n; i++) {
+		CM_Update(cm, data[i], i);
+	}
+
+	float size_precentage = percentage/100.0; // percenatge%
+	interval_size = ceil(size_precentage * window_size); // 10% of window_size
+
+    for (i = 0; i < n; i++)  {
+		double exact = 0;
+		int first = 0;
+		int last = interval_size;
+
+		for (int k = first; k< last; ++k) {
+			if (window[k] == data[i])
+				exact += 1;
+		}
+
+		estimated = CM_IntervalQuery(cm, data[i], first, last);
+
+		//cout << "estimated: " << estimated << " exact: " << exact << endl;
+		curr_error = exact - estimated;
+		curr_error = pow(curr_error, 2);
+		emp_error += curr_error;
+    }
+
+	emp_error = sqrt((emp_error/n));
+
+	printf( "./cm %d pairs emp error: %lf [%d counters %d window_size]\n", n, emp_error, counters, window_size);
+
+#endif
+
+#ifdef TEST_ERROR_MEMORY
+	delete[] window;
+#endif
+
 	CM_Destroy(cm);
 	return 0;
 }
