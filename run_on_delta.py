@@ -2,8 +2,13 @@
 import subprocess
 import random
 import math
+import matplotlib as mpl
+from matplotlib import pyplot as plt
+from matplotlib import ticker
+import numpy as np
 import re
 import cPickle
+import numpy
 import sys
 
 
@@ -36,8 +41,7 @@ for dataset in datasets:
 
         target_file = None
         M = 1
-        f = open(dataset+ sys.argv[1] + "_vary_intervals_epsilon"+".txt", "w+")
-
+        f = open(dataset+ sys.argv[1] + "_epsilon"+".txt", "w+")
         if dataset == "Chicago16":
                 target_file = "/home/ranas/wrss/Chicago16Weighted.txt"
                 M = 1
@@ -57,33 +61,36 @@ for dataset in datasets:
                 target_file = "/home/ranas/wrss/UCLA_UDP_trace.ifqFormat"
                 M = 1
 
-
-
-        RUNS = 1
+        RUNS = 10
+        FIRST_PHINDEX = 11
+        LAST_PHINDEX = 15
         gamma = 1
         n = 10000000
+        #n = 10000
         threshold = 1
         window_size = 1048576
-        intval_range = [1,5,10,15,30,50]
-        epsilon = 256
+        epsilonsrange = range(FIRST_PHINDEX,LAST_PHINDEX)
+        deltas = [0.01, 0.05, 0.1, 0.2] #actually its counters parameters (counters = 1/epsilon)
         fn = "./ecm"
         speeds = []
-        range = 0
+        epsilon = 256
+        range = 1
 
         results = {}
         first_iteration = True
-        for sz in intval_range:
+        for delta in deltas:
                 timing_list = []
                 for run in xrange(RUNS):
-                        command = [fn,"-t", str(sz)]
+                        command = [fn,"-d", str(delta)]
                         print command
+                        interval_1 = int (random.randint(1, math.ceil(0.99*window_size)))
+                        interval_2 = int (interval_1 + math.ceil(window_size / 100));
                         if target_file:
-                                command += ["-np", str(n), "-c", str(epsilon), "-f", target_file, "-M", str(M), "-gamma", str(gamma), "-w", str(window_size)]
+                                command += ["-np", str(n), "-c", str(epsilon), "-t", str(threshold), "-f", target_file, "-M", str(M), "-gamma", str(gamma), "-w", str(window_size), "-i", str(interval_1), "-j", str(interval_2)]
                         print " ".join(command)
                         out = subprocess.check_output(command)
                         if (range == 0):
                                 timing = re.search("\s(\d+\.\d+)s\s", out).groups()[0]
-                                print timing
                                 timing_list.append(timing)
                         else:
                                 f.write(out)

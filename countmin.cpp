@@ -246,6 +246,18 @@ int main(int argc, char * argv[]) {
 
 			interval_2 = atoi(argv[i]);
 		}
+		else if (strcmp(argv[i], "-d") == 0)
+		{
+			i++;
+			if (i >= argc)
+			{
+				std::cout << "Missing delta" << std::endl;
+				return -1;
+			}
+
+			delta = atoi(argv[i]);
+		}
+
 		else
 		{
 			cout << "Unknown parameter" << argv[i] << endl;
