@@ -259,7 +259,9 @@ int main(int argc, char * argv[]) {
 	}*/
 
 	int interval_range = min(window_size, n);
-	interval_size = ceil(double(interval_range) / double(100));
+	float size_precentage = percentage/100.0; // percenatge%
+	interval_size = ceil(size_precentage * window_size); // 10% of window_size
+
 	epsilon = (double)1 / (double)counters;
 	data = (unsigned long *)malloc(sizeof(unsigned long) * n);
 	weights = (unsigned *)malloc(sizeof(unsigned) * n);
@@ -365,8 +367,6 @@ int main(int argc, char * argv[]) {
 		CM_Update(cm, data[i], i);
 	}
 
-	float size_precentage = percentage/100.0; // percenatge%
-	interval_size = ceil(size_precentage * window_size); // 10% of window_size
 
     for (i = 0; i < n; i++)  {
 		double exact = 0;
