@@ -61,7 +61,7 @@ for dataset in datasets:
                 target_file = "/home/ranas/wrss/UCLA_UDP_trace.ifqFormat"
                 M = 1
 
-        RUNS = 10
+        RUNS = 1
         FIRST_PHINDEX = 11
         LAST_PHINDEX = 15
         gamma = 1
