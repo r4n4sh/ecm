@@ -70,7 +70,7 @@ for dataset in datasets:
         threshold = 1
         window_size = 1048576
         epsilonsrange = range(FIRST_PHINDEX,LAST_PHINDEX)
-        deltas = [0.01, 0.05, 0.1, 0.2] #actually its counters parameters (counters = 1/epsilon)
+        deltas = [100, 20, 10, 5] #actually its counters parameters (counters = 1/epsilon)
         fn = "./ecm"
         speeds = []
         epsilon = 256
