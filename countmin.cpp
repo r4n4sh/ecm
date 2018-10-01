@@ -29,8 +29,8 @@ to Creative Commons, 559 Nathan Abbott Way, Stanford, California
 
 //#define TEST_ERROR_MEMORY
 //#define TEST_UPDATE 1
-//#define TEST_QUERY 1
-#define TEST_QUERY_INTERVALS
+#define TEST_QUERY 1
+//#define TEST_QUERY_INTERVALS
 
 #define min(x,y)	((x) < (y) ? (x) : (y))
 #define max(x,y)	((x) > (y) ? (x) : (y))
@@ -345,7 +345,7 @@ int main(int argc, char * argv[]) {
 	time = ((double)(endt - begint)) / CLK_PER_SEC;
 	//memory = maxmemusage();
 
-	printf("./cm %d pairs took %lfs [%d counters %d window_size]\n", n, time, counters, window_size);
+	printf("./cm %d pairs took %lfs [%d counters %d window_size %f delta]\n", n, time, counters, window_size);
 
 #endif
 
