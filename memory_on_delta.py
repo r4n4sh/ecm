@@ -25,13 +25,13 @@ def plot_memory(memory):
     print average_memory["ECM"]
     plt.plot(deltas, average_memory["ECM"],"-D",label="$ECM$", markersize=MS, linewidth=LW, c="darkcyan")
 
-    plt.xscale("log",basex=2)
-    plt.yscale("log",basey=2)
+    #plt.xscale("log",basex=2)
+    #plt.yscale("log",basey=2)
 
     ##for algorithm in speed:
     ##    plt.plot(phis, speed[algorithm],label=algorithm)
-    #plt.xscale("log",basex=2)
-    #plt.yscale("log",basex=2)
+    plt.xscale("log",basex=2)
+    plt.yscale("log",basex=2)
 
     #ticks,labels = plt.xticks()
     #plt.xticks(ticks[::2],labels[::2])
@@ -39,10 +39,12 @@ def plot_memory(memory):
 
     plt.xlabel("Error Probability $\delta$", fontsize=36)
     ylabel_str = "Memory [MB]"
-    plt.ylabel(ylabel_str, fontsize=24)
+    plt.ylabel(ylabel_str, fontsize=36)
     plt.tick_params(labelsize=20)
     plt.xlim(0, 0.3)
     plt.ylim(0, 15)
+    plt.xticks([0.01, 0.05, 0.1, 0.2], ('0.01%', '0.05%', '0.1%', '0.2%'))
+
     plt.legend(loc="best") # keys of the graphs
     plt.tight_layout()
     plt.savefig('test_delta_memory.png')
