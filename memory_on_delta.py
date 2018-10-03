@@ -30,8 +30,8 @@ def plot_memory(memory):
 
     ##for algorithm in speed:
     ##    plt.plot(phis, speed[algorithm],label=algorithm)
-    plt.xscale("log",basex=2)
-    plt.yscale("log",basex=2)
+    #plt.xscale("log",basex=2)
+    #plt.yscale("log",basex=2)
 
     #ticks,labels = plt.xticks()
     #plt.xticks(ticks[::2],labels[::2])
@@ -41,8 +41,8 @@ def plot_memory(memory):
     ylabel_str = "Memory [MB]"
     plt.ylabel(ylabel_str, fontsize=36)
     plt.tick_params(labelsize=20)
-    plt.xlim(0, 0.3)
-    plt.ylim(0, 15)
+    plt.xlim(0, 0.2)
+    plt.ylim(16, 30)
     plt.xticks([0.01, 0.05, 0.1, 0.2], ('0.01%', '0.05%', '0.1%', '0.2%'))
 
     plt.legend(loc="best") # keys of the graphs
@@ -73,7 +73,7 @@ def calc_memory(delta):
     RAW = (4/eps) * WCSS
     oneOverDelta = 1/(delta/100);
     logOneOverDelta = log(oneOverDelta,2);
-    memory["ECM"].append((logOneOverDelta * eps**(-2) * 16)/ 1e6)
+    memory["ECM"].append((logOneOverDelta * eps**(-2) * 32)/ 1e6)
 
 memory = dict()
 memory["ECM"]=[]
