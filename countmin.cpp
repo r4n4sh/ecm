@@ -18,6 +18,7 @@ to Creative Commons, 559 Nathan Abbott Way, Stanford, California
 #include <time.h>
 #include <sys/timeb.h>
 #include <cstring>
+#include <math.h>
 #include "prng.h"
 #include "countmin.h"
 
@@ -288,8 +289,8 @@ int main(int argc, char * argv[]) {
 
 #endif
 
-	u32Depth = ceil(1/delta);
-	u32Width = ceil(1/epsilon);
+	u32Depth = log2(ceil(1/delta));
+	u32Width = ceil(4/epsilon);
 
 	CM_type* cm = CM_Init(u32Width, u32Depth, 32, window_size, epsilon);
 
