@@ -37,7 +37,7 @@ to Creative Commons, 559 Nathan Abbott Way, Stanford, California
 #define max(x,y)	((x) > (y) ? (x) : (y))
 
 double eps;	               /* 1+epsilon = approximation factor */
-double delta = 0.01;               /* probability of failure */
+double delta = 0.0001;               /* probability of failure 0.01% */
 
 /************************************************************************/
 /* Routines to support Count-Min sketches                               */
