@@ -258,7 +258,6 @@ int main(int argc, char * argv[]) {
 
 			delta = atoi(argv[i]);
 			delta = 1/delta;
-			delta = delta / 100;
 		}
 
 		else
