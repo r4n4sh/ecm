@@ -41,7 +41,7 @@ for dataset in datasets:
 
         target_file = None
         M = 1
-        f = open(dataset+ sys.argv[1] + "_epsilon"+".txt", "w+")
+        f = open(dataset+ sys.argv[1] + "_window"+".txt", "w+")
         if dataset == "Chicago16":
                 target_file = "/home/ranas/wrss/Chicago16Weighted.txt"
                 M = 1
