@@ -323,7 +323,7 @@ int main(int argc, char * argv[]) {
 
 	time = ((double)(endt - begint)) / CLK_PER_SEC;
 	//memory = maxmemusage();
-	printf("./cm %d pairs took %lfs [%d counters %d window_size %lf delta]\n", n, time, counters, window_size, delta);^M
+	printf("./cm %d pairs took %lfs [%d counters %d window_size %lf delta]\n", n, time, counters, window_size, delta);
 
 #endif
 
@@ -346,7 +346,7 @@ int main(int argc, char * argv[]) {
 	time = ((double)(endt - begint)) / CLK_PER_SEC;
 	//memory = maxmemusage();
 
-	printf("./cm %d pairs took %lfs [%d counters %d window_size %f delta]\n", n, time, counters, window_size, delta);^M
+	printf("./cm %d pairs took %lfs [%d counters %d window_size %f delta]\n", n, time, counters, window_size, delta);
 
 #endif
 
