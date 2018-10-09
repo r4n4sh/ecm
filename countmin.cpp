@@ -446,7 +446,7 @@ CM_type * CM_Init(int width, int depth, int seed, int w, double epsilon)
 				if (!cm->histograms[i])
 					return NULL;
 				for (int j = 0; j < cm->width; j++) {
-					cm->histograms[i][j].init(w, epsilon);
+					cm->histograms[i][j].init(w, epsilon/2);
 				}
 			}
 		}
