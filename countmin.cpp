@@ -28,8 +28,8 @@ to Creative Commons, 559 Nathan Abbott Way, Stanford, California
 #endif
 #endif
 
-//#define TEST_ERROR_MEMORY
-#define TEST_UPDATE 1
+#define TEST_ERROR_MEMORY
+//#define TEST_UPDATE 1
 //#define TEST_QUERY 1
 //#define TEST_QUERY_INTERVALS
 
@@ -394,7 +394,7 @@ int main(int argc, char * argv[]) {
 
 		estimated = CM_IntervalQuery(cm, data[i], first, last);
 
-		//cout << "estimated: " << estimated << " exact: " << exact << endl;
+		cout << "estimated: " << estimated << " exact: " << exact << "interval size: " << interval_size << endl;
 		curr_error = exact - estimated;
 		curr_error = pow(curr_error, 2);
 		emp_error += curr_error;

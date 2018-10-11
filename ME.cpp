@@ -271,11 +271,19 @@ void ME_Alg::insert_time(int t) {
 	while (it->getSize() >= k2 && it != histogram->end()){
 		//merge
 		int tt = it->getBuckets()->back().getTimestamp();
+		int olderStamp;
 		if (it->getSize() >= 2){
+
+			Bucket first = it->getBuckets()->back();
+			Bucket last = it->getBuckets()->back();
+
+			olderStamp = min(first.getTimestamp(), last.getTimestamp());
 			it->getBuckets()->pop_back();
 			it->getBuckets()->pop_back();
 			it->decrement2Size();
 		} else {
+			Bucket first = it->getBuckets()->back();
+			olderStamp = (first.getTimestamp());
 			it->getBuckets()->pop_back();
 			it->decrementSize();
 		}
@@ -283,13 +291,12 @@ void ME_Alg::insert_time(int t) {
 		++it;
 
 		_size <<= 1;
-
 		if (it != histogram->end()) {
-			it->getBuckets()->push_front(Bucket(_size, time));
+			it->getBuckets()->push_front(Bucket(_size, olderStamp));
 			it->incrementSize();
 		} else {
 			Info mergedinfo = Info();
-			mergedinfo.getBuckets()->push_front(Bucket(_size, time));
+			mergedinfo.getBuckets()->push_front(Bucket(_size, olderStamp));
 			mergedinfo.incrementSize();
 			histogram->push_back(mergedinfo);
 		}
@@ -324,7 +331,7 @@ unsigned int ME_Alg::query() {
 	return total + buffSum - last_size/2;
 }
 
-unsigned int ME_Alg::slow_query(int w) {
+unsigned int ME_Alg::slow_query(int w) { //1's in the last w bits
 	int buffSum = 0;
 	int tmp = 0;
 	list<Info>::iterator it = histogram->begin();
