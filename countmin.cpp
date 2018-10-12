@@ -381,20 +381,22 @@ int main(int argc, char * argv[]) {
 		CM_Update(cm, data[i], i);
 	}
 
+	delta = 0.001;
+	interval_size = 0.1 * window_size; 
 
     for (i = 0; i < n; i++)  {
 		double exact = 0;
-		int first = 0;
-		int last = interval_size;
+		int first = rand() % (window_size - interval_size);
+		int last = first + interval_size;
 
-		for (int k = first; k< last; ++k) {
+		for (int k = (window_size - first); k< (window_size - last); ++k) {
 			if (window[k] == data[i])
 				exact += 1;
 		}
 
 		estimated = CM_IntervalQuery(cm, data[i], first, last);
 
-		cout << "estimated: " << estimated << " exact: " << exact << "interval size: " << interval_size << endl;
+		//cout << "estimated: " << estimated << " exact: " << exact << "interval size: " << interval_size << endl;
 		curr_error = exact - estimated;
 		curr_error = pow(curr_error, 2);
 		emp_error += curr_error;
